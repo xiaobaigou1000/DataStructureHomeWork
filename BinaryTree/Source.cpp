@@ -93,7 +93,7 @@ int main()
             std::cout << "There are " << binTree->nodeCount() << " nodes in current binary tree.\n";
             break;
         case 7:
-            std::cout << "The binary tree max depth is: " << binTree->caculateDepth();
+            std::cout << "The binary tree max depth is: " << binTree->caculateDepth()<<'\n';
             break;
         case 8:
             binTree->exchangeChildren();

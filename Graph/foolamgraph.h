@@ -7,7 +7,7 @@ template<class Data, class ArcType, int maxVertexNum>
 class FoolAMGraph
 {
 public:
-    //too big for member variables, warped in an struct
+    //too big for member variables, wraped in an struct
     struct _Data
     {
         std::array<Data, maxVertexNum> vertices;

@@ -42,7 +42,7 @@ public:
     void DFSM(int vertexIndex)
     {
         visited[vertexIndex] = 1;
-        std::cout << "Now visit" << vertexIndex << "---" << vertices[vertexIndex] << '\n';
+        std::cout << "Now visit No." << vertexIndex << "---" << vertices[vertexIndex] << '\n';
         for (int i = 0; i < vertexNumber; i++)
         {
             if (arcs[vertexIndex][i] != 0 && !visited[i])

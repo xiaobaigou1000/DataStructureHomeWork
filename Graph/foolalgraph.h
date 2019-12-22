@@ -2,6 +2,7 @@
 #include<iostream>
 #include<algorithm>
 #include<array>
+#include<deque>
 
 template<class Data, int maxVertexNum>
 class FoolALGraph
@@ -53,6 +54,44 @@ public:
     inline void clearVisited()
     {
         std::fill(std::begin(visited), std::end(visited), int());
+    }
+
+    void BFSL(int v)
+    {
+        std::deque<int> vertexVisited;
+        visited[v] = 1;
+        std::cout << "Now visiting No." << v << "---" << vertices[v].data << '\n';
+        vertexVisited.push_back(v);
+        while (!vertexVisited.empty())
+        {
+            int i = vertexVisited.front();
+            vertexVisited.pop_front();
+            ArcNode* currentArc = vertices[i].firstArc;
+            while (currentArc)
+            {
+                if (visited[currentArc->adjVertexIndex] == 0)
+                {
+                    visited[currentArc->adjVertexIndex] = 1;
+                    std::cout << "traverse the graph from vertex: No." << currentArc->adjVertexIndex << "---" 
+                        << vertices[currentArc->adjVertexIndex].data << '\n';
+                    vertexVisited.push_back(currentArc->adjVertexIndex);
+                }
+                currentArc = currentArc->next;
+            }
+        }
+    }
+
+    void BFSLTraverse()
+    {
+        clearVisited();
+        for (int i = 0; i < vertexNumber; i++)
+        {
+            if (!visited[i])
+            {
+                std::cout << "traverse graph with BFSL from vertex: " << vertices[i].data << '\n';
+                BFSL(i);
+            }
+        }
     }
 
     int vertexNumber, arcNumber;

@@ -4,8 +4,9 @@
 int main()
 {
     using namespace FoolSort;
+    sortFunctionTestAndEfficiencyComparison(std::cout, insertSort);
 
-    std::vector<int> test;
+    /*std::vector<int> test;
     std::default_random_engine dre(std::chrono::system_clock::now().time_since_epoch().count());
     std::uniform_int_distribution<int> uid(0, 100);
     for (size_t i = 0; i < 5; i++)
@@ -13,6 +14,6 @@ int main()
         test.push_back(uid(dre));
     }
 
-    auto ret = insertSort(test);
+    auto ret = insertSort(test);*/
     return 0;
 }

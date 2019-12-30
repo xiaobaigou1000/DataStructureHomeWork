@@ -21,13 +21,18 @@ namespace FoolSort
     template<class Data>
     std::vector<Data> insertSort(std::vector<Data> toSort)
     {
-        for (auto i = std::begin(toSort) + 1; i != std::end(toSort); ++i)
+        toSort.push_back(Data());
+        auto backSentry = std::rbegin(toSort);
+
+        for (auto i = std::rbegin(toSort) + 2; i != std::rend(toSort); ++i)
         {
-            for (auto j = i; j != std::begin(toSort) && *j < *(j - 1); --j)
+            *backSentry = *i;
+            for (auto j = i; *j > *(j - 1); --j)
             {
                 std::iter_swap(j, j-1);
             }
         }
+        toSort.pop_back();
         return std::move(toSort);
     }
 

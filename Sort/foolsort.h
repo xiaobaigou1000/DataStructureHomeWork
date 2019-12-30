@@ -8,6 +8,7 @@
 #include<iomanip>
 #include<iterator>
 #include<functional>
+#include<numeric>
 namespace FoolSort
 {
     template<class DataTraits>
@@ -23,13 +24,15 @@ namespace FoolSort
     {
         toSort.push_back(Data());
         auto backSentry = std::rbegin(toSort);
+        auto reverseBegin = std::rbegin(toSort);
+        auto reverseEnd = std::rend(toSort);
 
-        for (auto i = std::rbegin(toSort) + 2; i != std::rend(toSort); ++i)
+        for (auto i = reverseBegin + 2; i != reverseEnd; ++i)
         {
             *backSentry = *i;
-            for (auto j = i; *j > *(j - 1); --j)
+            for (auto j = i; *j > * (j - 1); --j)
             {
-                std::iter_swap(j, j-1);
+                std::iter_swap(j, j - 1);
             }
         }
         toSort.pop_back();
@@ -41,15 +44,17 @@ namespace FoolSort
     {
         toSort.push_back(Data());
         auto backSentry = std::rbegin(toSort);
+        auto reverseBegin = std::rbegin(toSort);
+        auto reverseEnd = std::rend(toSort);
         typename std::vector<Data>::reverse_iterator reverseLow, reverseHigh, reverseMiddle;
-        for (auto i = std::rbegin(toSort) + 2; i != std::rend(toSort); ++i)
+        for (auto i = reverseBegin + 2; i != reverseEnd; ++i)
         {
             *backSentry = *i;
-            reverseLow = std::rbegin(toSort) + 1;
+            reverseLow = reverseBegin + 1;
             reverseHigh = i - 1;
             while (reverseLow <= reverseHigh)
             {
-                reverseMiddle = (reverseLow + (reverseHigh-reverseLow) / 2);
+                reverseMiddle = (reverseLow + (reverseHigh - reverseLow) / 2);
                 if (*backSentry < *reverseMiddle)
                     reverseLow = reverseMiddle + 1;
                 else
@@ -63,6 +68,35 @@ namespace FoolSort
         }
         toSort.pop_back();
         return std::move(toSort);
+    }
+
+    template<class Data>
+    std::vector<Data> shellSort(std::vector<Data> toSort)
+    {
+        auto begin = std::begin(toSort);
+        auto end = std::end(toSort);
+        int dk = 1;
+        while (dk < (end - begin) / 3)
+            dk = 3 * dk + 1;
+        while (dk > 0)
+        {
+            for (auto i = begin + dk; i != end; ++i)
+            {
+                for (auto j = i; (j - begin) >= dk && *j < *(j - dk); j -= dk)
+                {
+                    std::iter_swap(j, j - dk);
+                }
+            }
+            dk /= 3;
+        }
+        return std::move(toSort);
+    }
+
+    template<class Data>
+    std::vector<Data> bubbleSort(std::vector<Data> toSort)
+    {
+        auto begin = std::begin(toSort);
+        auto end = std::end(toSort);
     }
 
     template<class Data>
@@ -84,7 +118,7 @@ namespace FoolSort
         for (int i = 0; i < 100; ++i)
         {
             out << std::setw(8) << toPrint[i];
-            if ((i+1) % 10 == 0)
+            if ((i + 1) % 10 == 0)
             {
                 out << '\n';
             }
@@ -108,18 +142,35 @@ namespace FoolSort
 
         std::chrono::high_resolution_clock hrc;
         auto beforSort = hrc.now();
-        auto referenceSorted = getReferenceSortedArray(toSort);
-        auto timeElapsed = hrc.now() - beforSort;
+
+        std::vector<std::chrono::steady_clock::duration> referenceTime;
+        std::vector<int> referenceSorted;
+        for (size_t i = 0; i < 5; i++)
+        {
+            beforSort = hrc.now();
+            referenceSorted = getReferenceSortedArray(toSort);
+            referenceTime.push_back(hrc.now() - beforSort);
+        }
+        auto averageReferenceTime = std::accumulate(std::begin(referenceTime), std::end(referenceTime), std::chrono::steady_clock::duration());
+        averageReferenceTime /= referenceTime.size();
         out << "first 100 element of reference sorted array:\n\n";
         out << referenceSorted;
         out << "\n\n";
-        out << "time used in reference sort: " << timeElapsed.count() << " ns.\n\n";
+        out << "average time used in reference sort: " << averageReferenceTime.count() << " ns.\n\n";
 
-        beforSort = hrc.now();
-        auto sorted = sortFunction(toSort);
-        timeElapsed = hrc.now() - beforSort;
+        std::vector<std::chrono::steady_clock::duration> actualAlgorithmTime;
+        std::vector<int> sorted;
+        for (size_t i = 0; i < 5; i++)
+        {
+            beforSort = hrc.now();
+            sorted = sortFunction(toSort);
+            actualAlgorithmTime.push_back(hrc.now() - beforSort);
+        }
+        auto averageAlgorithmTime = std::accumulate(std::begin(actualAlgorithmTime), std::end(actualAlgorithmTime), std::chrono::steady_clock::duration());
+        averageAlgorithmTime /= actualAlgorithmTime.size();
+
         out << "first 100 element of sorted array by sort function:\n\n";
         out << sorted << "\n\n";
-        out << "time used in reference sort:" << timeElapsed.count() << " ns.\n\n";
+        out << "average time used in user defined sort function:" << averageAlgorithmTime.count() << " ns.\n\n";
     }
 }

@@ -37,6 +37,35 @@ namespace FoolSort
     }
 
     template<class Data>
+    std::vector<Data> binaryInsertionSort(std::vector<Data> toSort)
+    {
+        toSort.push_back(Data());
+        auto backSentry = std::rbegin(toSort);
+        typename std::vector<Data>::reverse_iterator reverseLow, reverseHigh, reverseMiddle;
+        for (auto i = std::rbegin(toSort) + 2; i != std::rend(toSort); ++i)
+        {
+            *backSentry = *i;
+            reverseLow = std::rbegin(toSort) + 1;
+            reverseHigh = i - 1;
+            while (reverseLow <= reverseHigh)
+            {
+                reverseMiddle = (reverseLow + (reverseHigh-reverseLow) / 2);
+                if (*backSentry < *reverseMiddle)
+                    reverseLow = reverseMiddle + 1;
+                else
+                    reverseHigh = reverseMiddle - 1;
+            }
+            for (auto j = i - 1; j > reverseHigh; --j)
+            {
+                *(j + 1) = *j;
+            }
+            *(reverseHigh + 1) = *backSentry;
+        }
+        toSort.pop_back();
+        return std::move(toSort);
+    }
+
+    template<class Data>
     std::vector<Data> spawnOriginData()
     {
         std::default_random_engine dre(std::chrono::system_clock::now().time_since_epoch().count());

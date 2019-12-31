@@ -157,7 +157,7 @@ namespace FoolSort
             return hrc.now() - beforSort;
         };
 
-        for (size_t i = 0; i < 5; i++)
+        for (size_t i = 0; i < 4; i++)
         {
             referenceTests.push_back(std::async(referenceAlgorithmTimer));
         }
@@ -181,7 +181,7 @@ namespace FoolSort
             sortFunction(toSort);
             return hrc.now() - beforSort;
         };
-        for (size_t i = 0; i < 5; i++)
+        for (size_t i = 0; i < 4; i++)
         {
             actualTests.push_back(std::async(actualAlgorithmTimer));
         }

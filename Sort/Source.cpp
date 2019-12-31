@@ -4,9 +4,12 @@
 int main()
 {
     using namespace FoolSort;
+    std::cout << "\n\nshell sort\n\n";
     sortFunctionTestAndEfficiencyComparison(std::cout, shellSort);
-    //sortFunctionTestAndEfficiencyComparison(std::cout, insertSort);
-    //sortFunctionTestAndEfficiencyComparison(std::cout, binaryInsertionSort);
+    std::cout << "\n\ninsertion sort\n\n";
+    sortFunctionTestAndEfficiencyComparison(std::cout, insertSort);
+    std::cout << "\n\nbinary insertion sort\n\n";
+    sortFunctionTestAndEfficiencyComparison(std::cout, binaryInsertionSort);
     //std::vector<int> test;
     //test.push_back(2);
     //test.push_back(1);

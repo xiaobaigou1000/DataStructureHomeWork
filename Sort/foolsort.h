@@ -9,6 +9,8 @@
 #include<iterator>
 #include<functional>
 #include<numeric>
+#include<thread>
+#include<future>
 namespace FoolSort
 {
     template<class DataTraits>
@@ -135,6 +137,8 @@ namespace FoolSort
 
     void sortFunctionTestAndEfficiencyComparison(std::ostream& out, std::vector<int>(*sortFunction)(std::vector<int>))
     {
+        
+
         auto toSort = spawnOriginData<int>();
         out << "first 100 element of origin random vector:\n\n";
         out << toSort;
@@ -143,13 +147,24 @@ namespace FoolSort
         std::chrono::high_resolution_clock hrc;
         auto beforSort = hrc.now();
 
+        std::vector<std::future<std::chrono::steady_clock::duration>> referenceTests;
         std::vector<std::chrono::steady_clock::duration> referenceTime;
         std::vector<int> referenceSorted;
+
+        auto referenceAlgorithmTimer = [&hrc,&toSort]() {
+            auto beforSort = hrc.now();
+            getReferenceSortedArray(toSort);
+            return hrc.now() - beforSort;
+        };
+
         for (size_t i = 0; i < 5; i++)
         {
-            beforSort = hrc.now();
-            referenceSorted = getReferenceSortedArray(toSort);
-            referenceTime.push_back(hrc.now() - beforSort);
+            referenceTests.push_back(std::async(referenceAlgorithmTimer));
+        }
+        referenceSorted = getReferenceSortedArray(toSort);
+        for (auto& i : referenceTests)
+        {
+            referenceTime.push_back(i.get());
         }
         auto averageReferenceTime = std::accumulate(std::begin(referenceTime), std::end(referenceTime), std::chrono::steady_clock::duration());
         averageReferenceTime /= referenceTime.size();
@@ -158,17 +173,25 @@ namespace FoolSort
         out << "\n\n";
         out << "average time used in reference sort: " << averageReferenceTime.count() << " ns.\n\n";
 
+        std::vector<std::future<std::chrono::steady_clock::duration>> actualTests;
         std::vector<std::chrono::steady_clock::duration> actualAlgorithmTime;
         std::vector<int> sorted;
+        auto actualAlgorithmTimer = [&hrc, &toSort, sortFunction]() {
+            auto beforSort = hrc.now();
+            sortFunction(toSort);
+            return hrc.now() - beforSort;
+        };
         for (size_t i = 0; i < 5; i++)
         {
-            beforSort = hrc.now();
-            sorted = sortFunction(toSort);
-            actualAlgorithmTime.push_back(hrc.now() - beforSort);
+            actualTests.push_back(std::async(actualAlgorithmTimer));
+        }
+        sorted = sortFunction(toSort);
+        for (auto& i : actualTests)
+        {
+            actualAlgorithmTime.push_back(i.get());
         }
         auto averageAlgorithmTime = std::accumulate(std::begin(actualAlgorithmTime), std::end(actualAlgorithmTime), std::chrono::steady_clock::duration());
         averageAlgorithmTime /= actualAlgorithmTime.size();
-
         out << "first 100 element of sorted array by sort function:\n\n";
         out << sorted << "\n\n";
         out << "average time used in user defined sort function:" << averageAlgorithmTime.count() << " ns.\n\n";

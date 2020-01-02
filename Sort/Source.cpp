@@ -16,42 +16,48 @@ void menu()
 
 int main()
 {
-    menu();
-
-
     using namespace FoolSort;
-    std::cout << "\n\nshell sort\n\n";
-    sortFunctionTestAndEfficiencyComparison(std::cout, 10000000,shellSort);
-    std::cout << "\n\ninsertion sort\n\n";
-    sortFunctionTestAndEfficiencyComparison(std::cout, 50000,insertSort);
-    std::cout << "\n\nbinary insertion sort\n\n";
-    sortFunctionTestAndEfficiencyComparison(std::cout, 50000,binaryInsertionSort);
-    std::cout << "\n\nbubble sort\n\n";
-    sortFunctionTestAndEfficiencyComparison(std::cout, 50000, bubbleSort);
-    std::cout << "\n\nsimple select sort\n\n";
-    sortFunctionTestAndEfficiencyComparison(std::cout, 50000, simpleSelectSort);
-    std::cout << "\n\nmerge sort\n\n";
-    sortFunctionTestAndEfficiencyComparison(std::cout, 10000000,mergeSort);
-    std::cout << "\n\nquick sort\n\n";
-    sortFunctionTestAndEfficiencyComparison(std::cout, 100000000, quickSort);
-    std::cout << "\n\nheap sort\n\n";
-    sortFunctionTestAndEfficiencyComparison(std::cout, 10000000, heapSort);
-
-    std::vector<int> test;
-    std::default_random_engine dre(std::chrono::system_clock::now().time_since_epoch().count());
-    std::uniform_int_distribution<int> uid(0, 100);
-    for (size_t i = 1; i < 5; i++)
+    menu();
+    int choice = -1;
+    while (std::cin >> choice)
     {
-        test.push_back(10 * i);
+        switch (choice)
+        {
+        case 1:
+            std::cout << "\n\ninsertion sort\n\n";
+            sortFunctionTestAndEfficiencyComparison(std::cout, 50000, insertSort);
+            break;
+        case 2:
+            std::cout << "\n\nbinary insertion sort\n\n";
+            sortFunctionTestAndEfficiencyComparison(std::cout, 50000, binaryInsertionSort);
+            break;
+        case 3:
+            std::cout << "\n\nshell sort\n\n";
+            sortFunctionTestAndEfficiencyComparison(std::cout, 10000000, shellSort);
+            break;
+        case 4:
+            std::cout << "\n\nbubble sort\n\n";
+            sortFunctionTestAndEfficiencyComparison(std::cout, 50000, bubbleSort);
+            break;
+        case 5:
+            std::cout << "\n\nquick sort\n\n";
+            sortFunctionTestAndEfficiencyComparison(std::cout, 100000000, quickSort);
+            break;
+        case 6:
+            std::cout << "\n\nsimple select sort\n\n";
+            sortFunctionTestAndEfficiencyComparison(std::cout, 50000, simpleSelectSort);
+            break;
+        case 7:
+            std::cout << "\n\nheap sort\n\n";
+            sortFunctionTestAndEfficiencyComparison(std::cout, 10000000, heapSort);
+            break;
+        case 8:
+            std::cout << "\n\nmerge sort\n\n";
+            sortFunctionTestAndEfficiencyComparison(std::cout, 10000000, mergeSort);
+            break;
+        default:
+            break;
+        }
     }
-    for (size_t i = 1; i < 5; i++)
-    {
-        test.push_back(10 * i + 5);
-    }
-
-    std::vector<int> tempArray;
-    tempArray.resize(test.size());
-
-    auto ret = heapSort(test);
     return 0;
 }

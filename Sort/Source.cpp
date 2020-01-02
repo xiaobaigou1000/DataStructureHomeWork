@@ -1,8 +1,24 @@
 #include<iostream>
 #include"foolsort.h"
 
+void menu()
+{
+    std::cout << "\n\nuniform int distribution sort example program.\n\n";
+    std::cout << "    1---insertion sort\n";
+    std::cout << "    2---binary insertion sort\n";
+    std::cout << "    3---shell sort\n";
+    std::cout << "    4---bubble sort\n";
+    std::cout << "    5---quick sort\n";
+    std::cout << "    6---simple select sort\n";
+    std::cout << "    7---heap sort\n";
+    std::cout << "    8---two side merge sort\n";
+}
+
 int main()
 {
+    menu();
+
+
     using namespace FoolSort;
     std::cout << "\n\nshell sort\n\n";
     sortFunctionTestAndEfficiencyComparison(std::cout, 10000000,shellSort);
@@ -12,15 +28,14 @@ int main()
     sortFunctionTestAndEfficiencyComparison(std::cout, 50000,binaryInsertionSort);
     std::cout << "\n\nbubble sort\n\n";
     sortFunctionTestAndEfficiencyComparison(std::cout, 50000, bubbleSort);
+    std::cout << "\n\nsimple select sort\n\n";
+    sortFunctionTestAndEfficiencyComparison(std::cout, 50000, simpleSelectSort);
     std::cout << "\n\nmerge sort\n\n";
     sortFunctionTestAndEfficiencyComparison(std::cout, 10000000,mergeSort);
     std::cout << "\n\nquick sort\n\n";
     sortFunctionTestAndEfficiencyComparison(std::cout, 100000000, quickSort);
-    //std::vector<int> test;
-    //test.push_back(2);
-    //test.push_back(1);
-    //test.push_back(3);
-    //auto ite = test.rbegin();
+    std::cout << "\n\nheap sort\n\n";
+    sortFunctionTestAndEfficiencyComparison(std::cout, 10000000, heapSort);
 
     std::vector<int> test;
     std::default_random_engine dre(std::chrono::system_clock::now().time_since_epoch().count());
@@ -37,14 +52,6 @@ int main()
     std::vector<int> tempArray;
     tempArray.resize(test.size());
 
-    auto ret = bubbleSort(test);
-    mergeSub(std::begin(test), std::begin(test) + (std::end(test) - std::begin(test)) / 2, std::end(test), std::begin(tempArray));
-    
-
-    //test.push_back(20);
-    //test.push_back(10);
-    //test.push_back(30);
-
-    //auto ret = binaryInsertionSort(test);
+    auto ret = heapSort(test);
     return 0;
 }

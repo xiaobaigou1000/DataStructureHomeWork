@@ -21,6 +21,46 @@ namespace FoolSort
     }
 
     template<class RandomIte>
+    void maxHeapify(RandomIte begin, RandomIte start, RandomIte end)
+    {
+        auto father = start;
+        auto son = begin + 2 * (father - begin) + 1;
+        while (son < end)
+        {
+            if (son + 1 < end && *son < *(son + 1))
+            {
+                ++son;
+            }
+            if (*father > * son)
+                return;
+            else
+            {
+                std::iter_swap(father, son);
+                father = son;
+                son = begin + 2 * (father - begin) + 1;
+            }
+        }
+    }
+
+    template<class Data>
+    std::vector<Data> heapSort(std::vector<Data> toSort)
+    {
+        auto begin = toSort.begin();
+        auto end = toSort.end();
+        auto length = toSort.size();
+        for (auto i = begin + length / 2 - 1; i != begin - 1; --i)
+        {
+            maxHeapify(begin, i, end);
+        }
+        for (auto i = end - 1; i != begin;--i)
+        {
+            std::iter_swap(begin, i);
+            maxHeapify(begin, begin, i);
+        }
+        return std::move(toSort);
+    }
+
+    template<class RandomIte>
     RandomIte quicksortPartion(RandomIte low, RandomIte high)
     {
         auto leftPointer = low;
@@ -59,7 +99,6 @@ namespace FoolSort
         return std::move(toSort);
     }
 
-    //Todo
     template<class Data>
     std::vector<Data> bubbleSort(std::vector<Data> toSort)
     {
@@ -74,6 +113,20 @@ namespace FoolSort
                     std::iter_swap(j, j + 1);
                 }
             }
+        }
+        return std::move(toSort);
+    }
+
+    template<class Data>
+    std::vector<Data> simpleSelectSort(std::vector<Data> toSort)
+    {
+        auto begin = toSort.begin();
+        auto end = toSort.end();
+        for (auto i = begin; i != end; ++i)
+        {
+            auto min = std::min_element(i, end);
+            if (min != i)
+                std::iter_swap(i, min);
         }
         return std::move(toSort);
     }
@@ -292,7 +345,8 @@ namespace FoolSort
         std::vector<int> sorted;
         auto averageAlgorithmTime = sortTimeCaculation(sortFunction, toSort, sorted);
 
-        out << "\n\n\ttest of " << toSort.size() << " samples.\n\n";
+        out << "\ttest of " << toSort.size() << " samples.\n";
+        out << "\taverage time of 11 times sort.\n\n";
         out << "first 100 element of origin random vector:\n\n";
         out << toSort;
         out << "\n\n";
@@ -304,6 +358,6 @@ namespace FoolSort
 
         out << "first 100 element of sorted array by sort function:\n\n";
         out << sorted << "\n\n";
-        out << "average time used in user defined sort function:" << (long long)averageAlgorithmTime.count() << " ns.\n\n";
+        out << "average time used in user defined sort function: " << (long long)averageAlgorithmTime.count() << " ns.\n\n";
     }
 }

@@ -20,6 +20,64 @@ namespace FoolSort
         *b = tmp;
     }
 
+    template<class RandomIte>
+    RandomIte quicksortPartion(RandomIte low, RandomIte high)
+    {
+        auto leftPointer = low;
+        auto rightPointer = high + 1;
+        auto partionValue = *low;
+        while (true)
+        {
+            while (*++leftPointer < partionValue)
+                if (leftPointer == high)
+                    break;
+            while (partionValue < *--rightPointer)
+                if (rightPointer == low)
+                    break;
+            if (leftPointer >= rightPointer)
+                break;
+            std::iter_swap(leftPointer, rightPointer);
+        }
+        std::iter_swap(low, rightPointer);
+        return rightPointer;
+    }
+
+    template<class RandomIte>
+    void quickSortSub(RandomIte low, RandomIte high)
+    {
+        if (high <= low)
+            return;
+        RandomIte partionPoint = quicksortPartion(low, high);
+        quickSortSub(low, partionPoint - 1);
+        quickSortSub(partionPoint + 1, high);
+    }
+
+    template<class Data>
+    std::vector<Data> quickSort(std::vector<Data> toSort)
+    {
+        quickSortSub(toSort.begin(), toSort.end() - 1);
+        return std::move(toSort);
+    }
+
+    //Todo
+    template<class Data>
+    std::vector<Data> bubbleSort(std::vector<Data> toSort)
+    {
+        auto begin = std::begin(toSort);
+        auto beforEnd = std::end(toSort) - 1;
+        for (auto i = begin; i != beforEnd; i++)
+        {
+            for (auto j = begin; j != begin+(beforEnd-i); ++j)
+            {
+                if (*j > * (j + 1))
+                {
+                    std::iter_swap(j, j + 1);
+                }
+            }
+        }
+        return std::move(toSort);
+    }
+
     template<class Data>
     std::vector<Data> insertSort(std::vector<Data> toSort)
     {
@@ -93,15 +151,6 @@ namespace FoolSort
         return std::move(toSort);
     }
 
-    //Todo
-    template<class Data>
-    std::vector<Data> bubbleSort(std::vector<Data> toSort)
-    {
-        auto begin = std::begin(toSort);
-        auto end = std::end(toSort);
-
-    }
-
     template<class RandomIte>
     inline void mergeSub(RandomIte low, RandomIte middle, RandomIte high, RandomIte tempArrayBeginPosition)
     {
@@ -146,7 +195,6 @@ namespace FoolSort
         mergeSub(low, middle, high, tempArrayBeginPosition);
     }
 
-    //Todo
     template<class Data>
     std::vector<Data> mergeSort(std::vector<Data> toSort)
     {
@@ -159,12 +207,12 @@ namespace FoolSort
     }
 
     template<class Data>
-    std::vector<Data> spawnOriginData()
+    std::vector<Data> spawnOriginData(long long size)
     {
         std::default_random_engine dre(std::chrono::system_clock::now().time_since_epoch().count());
         std::uniform_int_distribution<Data> uid(0, 1000000000);
         std::vector<Data> ret;
-        for (size_t i = 0; i < 100000000; i++)
+        for (size_t i = 0; i < size; i++)
         {
             ret.push_back(uid(dre));
         }
@@ -227,78 +275,35 @@ namespace FoolSort
         {
             testTimes.push_back(i.get());
         }
-        auto ambigousTime = std::accumulate(std::begin(testTimes), std::end(testTimes), std::chrono::steady_clock::duration());
+        ambigousTime = std::accumulate(std::begin(testTimes), std::end(testTimes), std::chrono::steady_clock::duration());
         ambigousTime /= testTimes.size();
         actualTime += ambigousTime * 0.6;
         return actualTime;
     }
 
-    void sortFunctionTestAndEfficiencyComparison(std::ostream& out, std::vector<int>(*sortFunction)(std::vector<int>))
+    void sortFunctionTestAndEfficiencyComparison(std::ostream& out, long long sampleSize, std::vector<int>(*sortFunction)(std::vector<int>))
     {
-        auto toSort = spawnOriginData<int>();
+        auto toSort = spawnOriginData<int>(sampleSize);
+        std::chrono::high_resolution_clock hrc;
+        auto beforSort = hrc.now();
 
+        std::vector<int> referenceSorted;
+        auto averageReferenceTime = sortTimeCaculation(getReferenceSortedArray, toSort, referenceSorted);
+        std::vector<int> sorted;
+        auto averageAlgorithmTime = sortTimeCaculation(sortFunction, toSort, sorted);
+
+        out << "\n\n\ttest of " << toSort.size() << " samples.\n\n";
         out << "first 100 element of origin random vector:\n\n";
         out << toSort;
         out << "\n\n";
 
-        std::chrono::high_resolution_clock hrc;
-        auto beforSort = hrc.now();
-
-        std::vector<std::future<std::chrono::steady_clock::duration>> referenceTests;
-        std::vector<std::chrono::steady_clock::duration> referenceTime;
-        std::vector<int> referenceSorted;
-
-        auto referenceAlgorithmTimer = [&hrc,&toSort]() {
-            auto beforSort = hrc.now();
-            getReferenceSortedArray(toSort);
-            return hrc.now() - beforSort;
-        };
-
-        for (size_t i = 0; i < 7; i++)
-        {
-            referenceTests.push_back(std::async(referenceAlgorithmTimer));
-        }
-        for (auto i = std::begin(referenceTests); i != std::begin(referenceTests) + 2; ++i)
-        {
-            i->get();
-        }
-        referenceSorted = getReferenceSortedArray(toSort);
-        for (auto i = referenceTests.begin() + 2; i != referenceTests.end(); ++i)
-        {
-            referenceTime.push_back(i->get());
-        }
-        auto averageReferenceTime = std::accumulate(std::begin(referenceTime), std::end(referenceTime), std::chrono::steady_clock::duration());
-        averageReferenceTime /= referenceTime.size();
         out << "first 100 element of reference sorted array:\n\n";
         out << referenceSorted;
         out << "\n\n";
-        out << "average time used in std::sort function: " << averageReferenceTime.count() << " ns.\n\n";
+        out << "average time used in std::sort function: " << (long long)averageReferenceTime.count() << " ns.\n\n";
 
-        std::vector<std::future<std::chrono::steady_clock::duration>> actualTests;
-        std::vector<std::chrono::steady_clock::duration> actualAlgorithmTime;
-        std::vector<int> sorted;
-        auto actualAlgorithmTimer = [&hrc, &toSort, sortFunction]() {
-            auto beforSort = hrc.now();
-            sortFunction(toSort);
-            return hrc.now() - beforSort;
-        };
-        for (size_t i = 0; i < 7; i++)
-        {
-            actualTests.push_back(std::async(actualAlgorithmTimer));
-        }
-        for (auto i = actualTests.begin(); i != actualTests.begin() + 2; ++i)
-        {
-            i->get();
-        }
-        sorted = sortFunction(toSort);
-        for (auto i = actualTests.begin() + 2; i != actualTests.end(); ++i)
-        {
-            actualAlgorithmTime.push_back(i->get());
-        }
-        auto averageAlgorithmTime = std::accumulate(std::begin(actualAlgorithmTime), std::end(actualAlgorithmTime), std::chrono::steady_clock::duration());
-        averageAlgorithmTime /= actualAlgorithmTime.size();
         out << "first 100 element of sorted array by sort function:\n\n";
         out << sorted << "\n\n";
-        out << "average time used in user defined sort function:" << averageAlgorithmTime.count() << " ns.\n\n";
+        out << "average time used in user defined sort function:" << (long long)averageAlgorithmTime.count() << " ns.\n\n";
     }
 }

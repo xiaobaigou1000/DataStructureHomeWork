@@ -216,23 +216,19 @@ namespace FoolSort
         {
             if (firstHalfIte == newMiddle)
             {
-                *i = *lastHalfIte;
-                lastHalfIte++;
+                *i = *lastHalfIte++;
             }
             else if (lastHalfIte == newHigh)
             {
-                *i = *firstHalfIte;
-                firstHalfIte++;
+                *i = *firstHalfIte++;
             }
             else if (*lastHalfIte < *firstHalfIte)
             {
-                *i = *lastHalfIte;
-                lastHalfIte++;
+                *i = *lastHalfIte++;
             }
             else
             {
-                *i = *firstHalfIte;
-                firstHalfIte++;
+                *i = *firstHalfIte++;
             }
         }
     }

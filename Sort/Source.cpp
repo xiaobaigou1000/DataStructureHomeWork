@@ -53,7 +53,7 @@ int main()
             break;
         case 8:
             std::cout << "\n\nmerge sort\n\n";
-            sortFunctionTestAndEfficiencyComparison(std::cout, 10000000, mergeSort);
+            sortFunctionTestAndEfficiencyComparison(std::cout, 50000000, mergeSort);
             break;
         default:
             break;

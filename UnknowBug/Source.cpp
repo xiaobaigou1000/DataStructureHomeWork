@@ -22,9 +22,10 @@ int main() {
     primers.reserve(1229);
     for (int j = 2; j <= high; j++) {
         int current = j;
+        int sqrtCurrent = std::sqrt(j);
         for (int i : primers)
         {
-            if(current % i == 0)
+            if (current % i == 0 || i > sqrtCurrent)
             {
                 --current;
                 break;
@@ -57,20 +58,19 @@ int main() {
         }
         return oss.str();
     };
-    vector<future<string>> group;
-    int groupSize = (low - high) / 10000;
-    --groupSize;
-    for (int i = 0; i < groupSize; ++i)
-    {
-        group.push_back(std::async(std::launch::async, outputfunc, high - 10000, high));
-        high -= 10001;
-    }
+    //vector<future<string>> group;
+    //int groupSize = (low - high) / 10000;
+    //--groupSize;
+    //for (int i = 0; i < groupSize; ++i)
+    //{
+    //    group.push_back(std::async(std::launch::async, outputfunc, high - 10000, high));
+    //    high -= 10001;
+    //}
     cout << outputfunc(low, high);
-    for (auto i = group.rbegin(); i != group.rend(); ++i)
-    {
-        cout << i->get();
-    }
-
+    //for (auto i = group.rbegin(); i != group.rend(); ++i)
+    //{
+    //    cout << i->get();
+    //}
     auto duration = hrc.now() - start;
     auto pastTime = std::chrono::duration_cast<std::chrono::milliseconds>(duration);
     cout << "\nusing " << pastTime.count() << " ms\n";

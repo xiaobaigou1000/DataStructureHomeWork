@@ -3,6 +3,7 @@
 #include<chrono>
 #include<sstream>
 #include<future>
+#include<cstring>
 
 int main() {
     using std::cin;
@@ -19,20 +20,19 @@ int main() {
 
     auto start = hrc.now();
     vector<int> primers;
+    bool* visited = new bool[high];
+    memset(visited, 1, high);
     primers.reserve(1229);
     for (int j = 2; j <= high; j++) {
         int current = j;
-        int sqrtCurrent = std::sqrt(j);
-        for (int i : primers)
+        if (visited[j])
         {
-            if (current % i == 0 || i > sqrtCurrent)
+            primers.push_back(current);
+            while ((current += j) < high)
             {
-                --current;
-                break;
+                visited[current] = false;
             }
         }
-        if (current == j)
-            primers.push_back(j);
     }
     auto outputfunc = [&primers](int low, int high)
     {

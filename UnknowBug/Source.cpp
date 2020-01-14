@@ -2,12 +2,15 @@
 #include<vector>
 #include<chrono>
 #include<sstream>
+#include<future>
 
 int main() {
     using std::cin;
     using std::cout;
     using std::vector;
     using std::ostringstream;
+    using std::future;
+    using std::string;
     std::chrono::high_resolution_clock hrc;
     int low, high = 0;
     cin.tie(nullptr);
@@ -16,55 +19,57 @@ int main() {
 
     auto start = hrc.now();
     vector<int> primers;
-    vector<vector<int>> result;
     primers.reserve(1229);
     for (int j = 2; j <= high; j++) {
         int current = j;
         for (int i : primers)
         {
-            while (current % i == 0)
+            if(current % i == 0)
             {
-                current /= i;
-                if (current <= i)
-                    break;
+                --current;
+                break;
             }
         }
         if (current == j)
             primers.push_back(j);
     }
-
-    int maxRowLength = 0;
-    for (int i = low; i <= high; ++i) {
-        int num = i;
-        result.push_back(vector<int>{});
-        auto back = result.rbegin();
-        back->push_back(num);
-        for (const auto& j : primers) {
-            while (num % j == 0) {
-                back->push_back(j);
-                num /= j;
-                if (num == 1)
-                {
-                    break;
+    auto outputfunc = [&primers](int low, int high)
+    {
+        ostringstream oss;
+        for (int i = low; i <= high; ++i) {
+            int num = i;
+            oss << num << '=';
+            for (const auto& j : primers) {
+                while (num % j == 0) {
+                    oss << j;
+                    num /= j;
+                    if (num != 1)
+                    {
+                        oss << '*';
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
+            oss << '\n';
         }
-    }
-
-    ostringstream oss;
-    for (const auto& i : result)
+        return oss.str();
+    };
+    vector<future<string>> group;
+    int groupSize = (low - high) / 10000;
+    --groupSize;
+    for (int i = 0; i < groupSize; ++i)
     {
-        auto begin = i.begin();
-        auto end = i.end();
-        oss << *begin++ << '=';
-        oss << *begin++;
-        for (auto j = begin; j < end; ++j)
-        {
-            oss << '*' << *j;
-        }
-        oss << '\n';
+        group.push_back(std::async(std::launch::async, outputfunc, high - 10000, high));
+        high -= 10001;
     }
-    cout << oss.str();
+    cout << outputfunc(low, high);
+    for (auto i = group.rbegin(); i != group.rend(); ++i)
+    {
+        cout << i->get();
+    }
 
     auto duration = hrc.now() - start;
     auto pastTime = std::chrono::duration_cast<std::chrono::milliseconds>(duration);

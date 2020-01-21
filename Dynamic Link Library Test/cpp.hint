@@ -1,0 +1,2 @@
+#define DYNAMICLINKLIBRARYTEST_API __declspec(dllexport)
+#define DYNAMICLINKLIBRARYTEST_API __declspec(dllimport)

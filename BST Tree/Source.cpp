@@ -1,5 +1,6 @@
 #include<iostream>
 #include"FoolAVL.h"
+#include"SequenceMemoryAVL.h"
 #include<set>
 #include<random>
 #include<chrono>
@@ -9,7 +10,7 @@ int main()
 {
     using std::cout;
 
-    FoolAVL<int> helloAVL;
+    SequenceMemoryAVL<int> helloAVL;
     helloAVL.insert({ 41,20,65,11,29,50,26,23,55 });
     cout << helloAVL << '\n';
     cout << "max element: " << helloAVL.max() << '\n';

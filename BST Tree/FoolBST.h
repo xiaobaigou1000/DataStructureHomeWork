@@ -93,12 +93,23 @@ public:
         return out;
     }
 
-    ~FoolBST()
+    //~FoolBST()
+    //{
+    //    clear(root);
+    //    delete root;
+    //}
+    void clear(Node* current)
     {
-        clear(root);
-        delete root;
+        if (current->left)
+        {
+            clear(current->left);
+        }
+        if (current->right)
+        {
+            clear(current->right);
+        }
+        delete current;
     }
-
 protected:
     inline Node* insertWithoutHeightCorrection(Data data)
     {
@@ -158,19 +169,5 @@ protected:
         inOrderTraverse(current->left, visit);
         visit(current->data);
         inOrderTraverse(current->right, visit);
-    }
-
-    void clear(Node* current)
-    {
-        if (current->left)
-        {
-            clear(current->left);
-            delete current->left;
-        }
-        if (current->right)
-        {
-            clear(current->right);
-            delete current->right;
-        }
     }
 };

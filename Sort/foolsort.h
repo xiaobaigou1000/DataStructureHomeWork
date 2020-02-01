@@ -12,6 +12,7 @@
 #include<future>
 
 #include"../BST Tree/FoolAVL.h"
+#include"../BST Tree/SequenceMemoryAVL.h"
 namespace FoolSort
 {
     template<class DataTraits>
@@ -25,7 +26,7 @@ namespace FoolSort
     template<class Data>
     std::vector<Data> AVLSort(std::vector<Data> toSort)
     {
-        FoolAVL<Data> sortAVL;
+        SequenceMemoryAVL<Data> sortAVL;
         for (auto i : toSort)
         {
             sortAVL.insert(i);

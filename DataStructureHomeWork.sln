@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnknowBug", "UnknowBug\Unkn
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dynamic Link Library Test", "Dynamic Link Library Test\Dynamic Link Library Test.vcxproj", "{551D0C26-AEE9-4046-9F4F-36A242ABFCEE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BST Tree", "BST Tree\BST Tree.vcxproj", "{E37107BA-D569-4E0B-8A9A-731D90EC52F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -91,6 +93,14 @@ Global
 		{551D0C26-AEE9-4046-9F4F-36A242ABFCEE}.Release|x64.Build.0 = Release|x64
 		{551D0C26-AEE9-4046-9F4F-36A242ABFCEE}.Release|x86.ActiveCfg = Release|Win32
 		{551D0C26-AEE9-4046-9F4F-36A242ABFCEE}.Release|x86.Build.0 = Release|Win32
+		{E37107BA-D569-4E0B-8A9A-731D90EC52F9}.Debug|x64.ActiveCfg = Debug|x64
+		{E37107BA-D569-4E0B-8A9A-731D90EC52F9}.Debug|x64.Build.0 = Debug|x64
+		{E37107BA-D569-4E0B-8A9A-731D90EC52F9}.Debug|x86.ActiveCfg = Debug|Win32
+		{E37107BA-D569-4E0B-8A9A-731D90EC52F9}.Debug|x86.Build.0 = Debug|Win32
+		{E37107BA-D569-4E0B-8A9A-731D90EC52F9}.Release|x64.ActiveCfg = Release|x64
+		{E37107BA-D569-4E0B-8A9A-731D90EC52F9}.Release|x64.Build.0 = Release|x64
+		{E37107BA-D569-4E0B-8A9A-731D90EC52F9}.Release|x86.ActiveCfg = Release|Win32
+		{E37107BA-D569-4E0B-8A9A-731D90EC52F9}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

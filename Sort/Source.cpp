@@ -12,6 +12,7 @@ void menu()
     std::cout << "    6---simple select sort\n";
     std::cout << "    7---heap sort\n";
     std::cout << "    8---two side merge sort\n";
+    std::cout << "    9---AVL sort\n";
 }
 
 int main()
@@ -55,6 +56,9 @@ int main()
             std::cout << "\n\nmerge sort\n\n";
             sortFunctionTestAndEfficiencyComparison(std::cout, 50000000, mergeSort);
             break;
+        case 9:
+            std::cout << "\n\nAVL sort\n\n";
+            sortFunctionTestAndEfficiencyComparison(std::cout, 10000000, AVLSort);
         default:
             break;
         }

@@ -9,49 +9,49 @@ public:
     struct BTNode
     {
         Data data;
-        BTNode* lchild, * rchild;
+        BTNode* left, * right;
 
         BTNode()
         {
-            lchild = nullptr;
-            rchild = nullptr;
+            left = nullptr;
+            right = nullptr;
         };
 
         BTNode(Data data) :data(data)
         {
-            lchild = nullptr;
-            rchild = nullptr;
+            left = nullptr;
+            right = nullptr;
         }
 
-        BTNode(Data data, BTNode* lchild, BTNode* rchild)
-            :data(data), lchild(lchild), rchild(rchild)
+        BTNode(Data data, BTNode* left, BTNode* right)
+            :data(data), left(left), right(right)
         {
 
         }
 
         void insertLeft(const Data& data)
         {
-            if (lchild != nullptr)
+            if (left != nullptr)
             {
-                BTNode* temp = new BTNode(data, lchild, nullptr);
-                lchild = temp;
+                BTNode* temp = new BTNode(data, left, nullptr);
+                left = temp;
             }
             else
             {
-                lchild = new BTNode(data, nullptr, nullptr);
+                left = new BTNode(data, nullptr, nullptr);
             }
         }
 
         void insertRight(const Data& data)
         {
-            if (rchild != nullptr)
+            if (right != nullptr)
             {
-                BTNode* temp = new BTNode(data, nullptr, rchild);
-                rchild = temp;
+                BTNode* temp = new BTNode(data, nullptr, right);
+                right = temp;
             }
             else
             {
-                rchild = new BTNode(data, nullptr, nullptr);
+                right = new BTNode(data, nullptr, nullptr);
             }
         }
     };
@@ -121,25 +121,25 @@ private:
         }
         current = new BTNode(currentData, nullptr, nullptr);
         std::cout << "Please input left child for student: " << current->data << '\n';
-        createBinaryTreeByPreOrder(current->lchild, input);
+        createBinaryTreeByPreOrder(current->left, input);
         std::cout << "Please input right child for student: " << current->data << '\n';
-        createBinaryTreeByPreOrder(current->rchild, input);
+        createBinaryTreeByPreOrder(current->right, input);
     }
 
     int leafCount(BTNode* current)
     {
         if (!current)
             return 0;
-        if (!current->lchild && !current->rchild)
+        if (!current->left && !current->right)
             return 1;
-        return (leafCount(current->lchild) + leafCount(current->rchild));
+        return (leafCount(current->left) + leafCount(current->right));
     }
 
     int nodeCount(BTNode* current)
     {
         if (!current)
             return 0;
-        return (nodeCount(current->lchild) + nodeCount(current->rchild)+1);
+        return (nodeCount(current->left) + nodeCount(current->right)+1);
     }
 
     void preOrderTraverse(BTNode* current, const std::function<void(Data)>& visit)
@@ -147,8 +147,8 @@ private:
         if (current != nullptr)
         {
             visit(current->data);
-            preOrderTraverse(current->lchild, visit);
-            preOrderTraverse(current->rchild, visit);
+            preOrderTraverse(current->left, visit);
+            preOrderTraverse(current->right, visit);
         }
     }
 
@@ -156,9 +156,9 @@ private:
     {
         if (current != nullptr)
         {
-            inOrderTraverse(current->lchild, visit);
+            inOrderTraverse(current->left, visit);
             visit(current->data);
-            inOrderTraverse(current->rchild, visit);
+            inOrderTraverse(current->right, visit);
         }
     }
 
@@ -166,8 +166,8 @@ private:
     {
         if (current != nullptr)
         {
-            postOrderTraverse(current->lchild, visit);
-            postOrderTraverse(current->rchild, visit);
+            postOrderTraverse(current->left, visit);
+            postOrderTraverse(current->right, visit);
             visit(current->data);
         }
     }
@@ -176,8 +176,8 @@ private:
     {
         if (!current)
             return 0;
-        int h1 = depth(current->lchild);
-        int h2 = depth(current->rchild);
+        int h1 = depth(current->left);
+        int h2 = depth(current->right);
         if (h1 > h2)
             return h1 + 1;
         else
@@ -188,8 +188,8 @@ private:
     {
         if (current)
         {
-            destroyFunc(current->lchild);
-            destroyFunc(current->rchild);
+            destroyFunc(current->left);
+            destroyFunc(current->right);
             delete current;
         }
     }
@@ -199,11 +199,11 @@ private:
         if (current)
         {
             BTNode* temp;
-            exchangeChildren(current->lchild);
-            exchangeChildren(current->rchild);
-            temp = current->lchild;
-            current->lchild = current->rchild;
-            current->rchild = temp;
+            exchangeChildren(current->left);
+            exchangeChildren(current->right);
+            temp = current->left;
+            current->left = current->right;
+            current->right = temp;
         }
     }
 };

@@ -10,6 +10,8 @@
 #include<functional>
 #include<numeric>
 #include<future>
+
+#include"../BST Tree/FoolAVL.h"
 namespace FoolSort
 {
     template<class DataTraits>
@@ -18,6 +20,19 @@ namespace FoolSort
         typename std::iterator_traits<DataTraits>::value_type tmp = *a;
         *a = *b;
         *b = tmp;
+    }
+
+    template<class Data>
+    std::vector<Data> AVLSort(std::vector<Data> toSort)
+    {
+        FoolAVL<Data> sortAVL;
+        for (auto i : toSort)
+        {
+            sortAVL.insert(i);
+        }
+        toSort.clear();
+        sortAVL.inOrderTraverse([&toSort](auto i) {toSort.push_back(i); });
+        return toSort;
     }
 
     template<class RandomIte>

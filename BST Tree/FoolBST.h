@@ -14,11 +14,12 @@ public:
     {
         Data data;
         int height;
+        Node* parent;
         Node* left;
         Node* right;
 
-        Node(Data data = Data(), int height = 0, Node* left = nullptr, Node* right = nullptr)
-            :data(data), height(height), left(left), right(right)
+        Node(Data data = Data(), int height = 0, Node* parent = nullptr, Node* left = nullptr, Node* right = nullptr)
+            :data(data), height(height), parent(parent), left(left), right(right)
         {
 
         }
@@ -46,9 +47,21 @@ public:
         return current->data;
     }
 
-    void insert(Data data)
+    Node* insert(Data data)
     {
-        root = insert(root, std::move(data));
+        if (!root)
+        {
+            root = new Node(data, 0, nullptr);
+            return root;
+        }
+        Node* insertPoint = insertWithoutHeightCorrection(data);
+        Node* current = insertPoint->parent;
+        while (current)
+        {
+            current->height = caculateAVLHeight(current);
+            current = current->parent;
+        }
+        return insertPoint;
     }
 
     void insert(const std::initializer_list<Data>& initList)
@@ -64,7 +77,7 @@ public:
         inOrderTraverse(root, visit);
     }
 
-    friend std::ostream& operator<<(std::ostream& out, FoolBST<Data> toPrint)
+    friend std::ostream& operator<<(std::ostream& out, FoolBST<Data>& toPrint)
     {
         int count = 0;
 
@@ -87,6 +100,42 @@ public:
     }
 
 protected:
+    inline Node* insertWithoutHeightCorrection(Data data)
+    {
+        Node* current = root;
+        Node* insertPoint = nullptr;
+        while (true)
+        {
+            if (data < current->data)
+            {
+                if (current->left)
+                {
+                    current = current->left;
+                }
+                else
+                {
+                    current->left = new Node(data, 0, current);
+                    insertPoint = current->left;
+                    break;
+                }
+            }
+            else
+            {
+                if (current->right)
+                {
+                    current = current->right;
+                }
+                else
+                {
+                    current->right = new Node(data, 0, current);
+                    insertPoint = current->right;
+                    break;
+                }
+            }
+        }
+        return insertPoint;
+    }
+
     inline static int nodeHeight(Node* current)
     {
         if (!current)
@@ -95,30 +144,11 @@ protected:
             return current->height;
     }
 
-    Node* insert(Node* current, Data data)
-    {
-        if (current == nullptr)
-        {
-            current = new Node(std::move(data));
-            return current;
-        }
-
-        if (data < current->data)
-        {
-            current->left = insert(current->left, data);
-        }
-        else
-        {
-            current->right = insert(current->right, data);
-        }
-        current->height = caculateAVLHeight(current);
-        ++current->height;
-        return current;
-    }
-
     inline static int caculateAVLHeight(Node* current)
     {
-        return nodeHeight(current->left) > nodeHeight(current->right) ? nodeHeight(current->left) : nodeHeight(current->right);
+        int height = nodeHeight(current->left) > nodeHeight(current->right) ? nodeHeight(current->left) : nodeHeight(current->right);
+        ++height;
+        return height;
     }
 
     void inOrderTraverse(Node* current, const std::function<void(Data)>& visit)

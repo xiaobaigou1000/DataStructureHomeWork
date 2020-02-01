@@ -26,5 +26,8 @@
     <ClInclude Include="FoolAVL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SequenceMemoryAVL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

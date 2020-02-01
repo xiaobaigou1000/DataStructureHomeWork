@@ -7,9 +7,27 @@ class FoolAVL :public FoolBST<Data>
 public:
     using Node = FoolBST<Data>::Node;
 
-    void insert(Data data)
+    Node* insert(Data data)
     {
-        this->root = insert(this->root, std::move(data));
+        if (!this->root)
+        {
+            this->root = new Node(data, 0, nullptr);
+            return this->root;
+        }
+        Node* insertPoint = this->insertWithoutHeightCorrection(data);
+        Node* current = insertPoint->parent;
+        Node* fixedRoot = nullptr;
+        while (current)
+        {
+            if (current->left)
+                current->left = fixAVL(current->left);
+            if (current->right)
+                current->right = fixAVL(current->right);
+            fixedRoot = current;
+            current = current->parent;
+        }
+        this->root = fixAVL(fixedRoot);
+        return insertPoint;
     }
 
     void insert(const std::initializer_list<Data>& initList)
@@ -20,25 +38,8 @@ public:
         }
     }
 protected:
-    Node* insert(Node* current, Data data)
+    inline static Node* fixAVL(Node* current)
     {
-        if (current == nullptr)
-        {
-            current = new Node(std::move(data));
-            return current;
-        }
-
-        if (data < current->data)
-        {
-            current->left = insert(current->left, data);
-        }
-        else
-        {
-            current->right = insert(current->right, data);
-        }
-        current->height = FoolBST<Data>::caculateAVLHeight(current);
-        ++current->height;
-
         if (testAVL(current) < -1)
         {
             if (testAVL(current->right) < 0)
@@ -63,7 +64,10 @@ protected:
                 current = rightRotate(current);
             }
         }
-
+        else
+        {
+            current->height = FoolBST<Data>::caculateAVLHeight(current);
+        }
         return current;
     }
 
@@ -77,6 +81,8 @@ protected:
         Node* right = toRotate->right;
         toRotate->right = right->left;
         right->left = toRotate;
+        right->parent = toRotate->parent;
+        toRotate->parent = right;
         toRotate->height = FoolBST<Data>::caculateAVLHeight(toRotate);
         right->height = FoolBST<Data>::caculateAVLHeight(right);
         return right;
@@ -87,6 +93,8 @@ protected:
         Node* left = toRotate->left;
         toRotate->left = left->right;
         left->right = toRotate;
+        left->parent = toRotate->parent;
+        toRotate->parent = left;
         toRotate->height = FoolBST<Data>::caculateAVLHeight(toRotate);
         left->height = FoolBST<Data>::caculateAVLHeight(left);
         return left;

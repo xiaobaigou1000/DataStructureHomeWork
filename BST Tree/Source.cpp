@@ -17,7 +17,7 @@ int main()
 
     std::default_random_engine dre(std::chrono::system_clock::now().time_since_epoch().count());
     std::uniform_int_distribution<int> uid(1, 10000000000);
-    for (size_t i = 0; i < 500000; i++)
+    for (size_t i = 0; i < 50; i++)
     {
         helloAVL.insert(uid(dre));
     }

@@ -1,28 +1,29 @@
 ﻿#include<iostream>
-#include<chrono>
-#include<thread>
+#include<memory>
+using namespace std;
 
-int main() 
+struct UPTest
 {
-    using namespace std::chrono;
-    using namespace std::chrono_literals;
-    using std::cout;
+    int a;
+    int b;
 
-    auto startTimePoint = steady_clock::now();
-    auto lastFrameTimePoint = steady_clock::now();
+    UPTest():a(),b() { cout << "UPTest object constructed. [default constructor]\n"; }
+    UPTest(const UPTest& from) { a = from.a; b = from.b; cout << "UPTest copy constructor called.\n"; }
+    UPTest(UPTest&& from)noexcept { a = from.a; b = from.b; cout << "UPTest move constructor called.\n"; }
+    UPTest& operator=(const UPTest& from) { a = from.a; b = from.b; cout << "copy assignment called.\n"; return *this; }
+    UPTest& operator=(UPTest&& from)noexcept { a = move(from.a); b = move(from.b); cout << "move assignment called.\n"; return *this; }
+    ~UPTest() { cout << "UPTest object deleted.\n"; }
+};
 
-    auto sleepPeriod = 1.2s;
-    
-    while (true)
-    {
-        std::this_thread::sleep_for(sleepPeriod);
-        auto currentTime = steady_clock::now();
-        float intervalTime = duration_cast<duration<float, std::ratio<1, 1>>>(currentTime - lastFrameTimePoint).count();
-        lastFrameTimePoint = currentTime;
-        float timeFromProgramBegin = duration_cast<duration<float, std::ratio<1, 1>>>(currentTime - startTimePoint).count();
-
-        cout << "interval from last frame: " << intervalTime << "s, total run time: " << timeFromProgramBegin << '\n';
-    }
+int main()
+{
+    UPTest hello;
+    UPTest world(hello);
+    UPTest third(std::move(hello));
+    UPTest forth = world;
+    UPTest fifth;
+    fifth = world;
+    world = move(fifth);
 
     return 0;
 }

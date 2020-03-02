@@ -1,50 +1,44 @@
-﻿#include<algorithm>
-#include<iostream>
-#include<vector>
-#include<random>
+﻿#include<iostream>
 #include<chrono>
+#include<thread>
+#include<mutex>
 
 int main()
 {
     using namespace std;
-    default_random_engine dre(chrono::system_clock::now().time_since_epoch().count());
-    uniform_int_distribution<int> hello(0, 1000);
-    int toSort[100];
-
-    for (size_t i = 0; i < 100; i++)
-    {
-        toSort[i] = hello(dre);
-    }
-
-    int l = 3, r = 10, k = 2;
-    cout << "please input l(left boundry), r(right boundry), k\n";
-    cin >> l >> r >> k;
-
-    --l;
-    --k;
-    sort(begin(toSort) + l, begin(toSort) + r, [](int a, int b) {return a > b; });
-    auto beg = begin(toSort);
-    int result = *(begin(toSort) + l + k);
-    cout << "result is :" << result << '\n';
-    for (auto i = begin(toSort); i != begin(toSort) + l; ++i)
-    {
-        cout << *i << ' ';
-    }
-    cout << " [ ";
-    for (auto i = begin(toSort) + l; i != begin(toSort) + l + k; ++i)
-    {
-        cout << *i << ' ';
-    }
-    cout << '(' << *(begin(toSort) + l + k) << ") ";
-    for (auto i = begin(toSort) + l + k + 1; i != begin(toSort) + r; ++i)
-    {
-        cout << *i << ' ';
-    }
-    cout << " ] ";
-    for (auto i = begin(toSort) + r; i != begin(toSort) + r + 5; ++i)
-    {
-        cout << *i << ' ';
-    }
-    cout << endl;
+    using namespace std::chrono;
+    using namespace std::chrono_literals;
+    mutex loc1;
+    mutex loc2;
+    std::thread testA([&] {
+        while (true)
+        {
+            {
+                this_thread::sleep_for(500ms);
+                lock_guard<mutex> lg1(loc1);
+                cout << "lock 1\n";
+                this_thread::sleep_for(500ms);
+                lock_guard<mutex> lg2(loc2);
+                cout << "lock 2\n";
+            }
+            cout << "unlock\n";
+        }
+        });
+    std::thread testB([&] {
+        while (true)
+        {
+            {
+                this_thread::sleep_for(3s);
+                lock_guard<mutex> lg1(loc2);
+                cout << "lock 2\n";
+                this_thread::sleep_for(3s);
+                lock_guard<mutex> lg2(loc1);
+                cout << "lock 1\n";
+            }
+            cout << "unlock\n";
+        }
+        });
+    testA.join();
+    testB.join();
     return 0;
 }

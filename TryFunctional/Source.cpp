@@ -15,14 +15,25 @@ int count_lines(const std::vector<char>& s)
     return std::accumulate(s.begin(), s.end(), 1, foldFunc);
 }
 
+bool is_not_space(char c)
+{
+    return c != ' ';
+}
+
+std::string trim_left(std::string s)
+{
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), is_not_space));
+    return s;
+}
+
+std::string trim_right(std::string s)
+{
+    s.erase(std::find_if(s.rbegin(), s.rend(), is_not_space).base(), s.end());
+    return s;
+}
+
 int main()
 {
-    std::ifstream in("Source.cpp", std::ios::ate);
-    std::streamoff end = in.tellg();
-    in.seekg(std::ios::beg);
-    std::vector<char> fileString(static_cast<size_t>(end - in.tellg()));
-    std::copy(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>(), fileString.begin());
-    int result = count_lines(fileString);
-
-    std::cout << result<<'\n';
+    std::string hello = "   hello world      ";
+    std::cout << '\"' << trim_right(trim_left(hello)) << '\"';
 }

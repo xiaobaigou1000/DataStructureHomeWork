@@ -2,16 +2,27 @@
 #include<vector>
 #include<algorithm>
 #include<numeric>
+#include<fstream>
+#include<ios>
 
-double average_score(const std::vector<int>& scores)
+int foldFunc(int previousCount, char c)
 {
-    return std::accumulate(scores.begin(), scores.end(), 0, std::plus<int>()) / static_cast<double>(scores.size());
+    return c != '\n' ? previousCount : previousCount + 1;
+}
+
+int count_lines(const std::vector<char>& s)
+{
+    return std::accumulate(s.begin(), s.end(), 1, foldFunc);
 }
 
 int main()
 {
-    std::vector<int> scores{ 5,5,4,7,8,22,14 };
-    double result = average_score(scores);
+    std::ifstream in("Source.cpp", std::ios::ate);
+    std::streamoff end = in.tellg();
+    in.seekg(std::ios::beg);
+    std::vector<char> fileString(static_cast<size_t>(end - in.tellg()));
+    std::copy(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>(), fileString.begin());
+    int result = count_lines(fileString);
 
-    std::cout << result << '\n';
+    std::cout << result<<'\n';
 }

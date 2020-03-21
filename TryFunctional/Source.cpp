@@ -1,13 +1,17 @@
 #include<iostream>
-#include"count_file_lines.h"
+#include<vector>
+#include<algorithm>
+#include<numeric>
+
+double average_score(const std::vector<int>& scores)
+{
+    return std::accumulate(scores.begin(), scores.end(), 0, std::plus<int>()) / static_cast<double>(scores.size());
+}
 
 int main()
 {
-    std::vector<std::string> files{ "../Graph/foolalgraph.h","../Graph/foolamgraph.h","../Graph/Source.cpp" };
-    auto results = count_file_lines::count_file_lines(files);
+    std::vector<int> scores{ 5,5,4,7,8,22,14 };
+    double result = average_score(scores);
 
-    for (auto i : results)
-    {
-        std::cout << i<<' ';
-    }
+    std::cout << result << '\n';
 }

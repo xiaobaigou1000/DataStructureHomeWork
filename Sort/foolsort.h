@@ -76,6 +76,23 @@ namespace FoolSort
         return std::move(toSort);
     }
 
+    template<class Data>
+    void inplace_heapSort(std::vector<Data>& toSort)
+    {
+        auto begin = toSort.begin();
+        auto end = toSort.end();
+        auto length = toSort.size();
+        for (auto i = begin + length / 2 - 1; i != begin - 1; --i)
+        {
+            maxHeapify(begin, i, end);
+        }
+        for (auto i = end - 1; i != begin; --i)
+        {
+            std::iter_swap(begin, i);
+            maxHeapify(begin, begin, i);
+        }
+    }
+
     template<class RandomIte>
     RandomIte quicksortPartion(RandomIte low, RandomIte high)
     {
@@ -116,6 +133,12 @@ namespace FoolSort
     }
 
     template<class Data>
+    void inplace_quickSort(std::vector<Data>& toSort)
+    {
+        quickSortSub(toSort.begin(), toSort.end() - 1);
+    }
+
+    template<class Data>
     std::vector<Data> bubbleSort(std::vector<Data> toSort)
     {
         auto begin = std::begin(toSort);
@@ -131,6 +154,23 @@ namespace FoolSort
             }
         }
         return std::move(toSort);
+    }
+
+    template<class Data>
+    void inplace_bubbleSort(std::vector<Data>& toSort)
+    {
+        auto begin = std::begin(toSort);
+        auto beforEnd = std::end(toSort) - 1;
+        for (auto i = begin; i != beforEnd; i++)
+        {
+            for (auto j = begin; j != begin + (beforEnd - i); ++j)
+            {
+                if (*j > * (j + 1))
+                {
+                    std::iter_swap(j, j + 1);
+                }
+            }
+        }
     }
 
     template<class Data>
@@ -167,6 +207,25 @@ namespace FoolSort
         return std::move(toSort);
     }
 
+    template<typename Data>
+    void inplace_insert_sort(std::vector<Data>& toSort)
+    {
+        toSort.push_back(Data());
+        auto backSentry = std::rbegin(toSort);
+        auto reverseBegin = std::rbegin(toSort);
+        auto reverseEnd = std::rend(toSort);
+
+        for (auto i = reverseBegin + 2; i != reverseEnd; ++i)
+        {
+            *backSentry = *i;
+            for (auto j = i; *j > * (j - 1); --j)
+            {
+                std::iter_swap(j, j - 1);
+            }
+        }
+        toSort.pop_back();
+    }
+
     template<class Data>
     std::vector<Data> binaryInsertionSort(std::vector<Data> toSort)
     {
@@ -199,6 +258,36 @@ namespace FoolSort
     }
 
     template<class Data>
+    void inplace_binaryInsertionSort(std::vector<Data>& toSort)
+    {
+        toSort.push_back(Data());
+        auto backSentry = std::rbegin(toSort);
+        auto reverseBegin = std::rbegin(toSort);
+        auto reverseEnd = std::rend(toSort);
+        typename std::vector<Data>::reverse_iterator reverseLow, reverseHigh, reverseMiddle;
+        for (auto i = reverseBegin + 2; i != reverseEnd; ++i)
+        {
+            *backSentry = *i;
+            reverseLow = reverseBegin + 1;
+            reverseHigh = i - 1;
+            while (reverseLow <= reverseHigh)
+            {
+                reverseMiddle = (reverseLow + (reverseHigh - reverseLow) / 2);
+                if (*backSentry < *reverseMiddle)
+                    reverseLow = reverseMiddle + 1;
+                else
+                    reverseHigh = reverseMiddle - 1;
+            }
+            for (auto j = i - 1; j > reverseHigh; --j)
+            {
+                *(j + 1) = *j;
+            }
+            *(reverseHigh + 1) = *backSentry;
+        }
+        toSort.pop_back();
+    }
+
+    template<class Data>
     std::vector<Data> shellSort(std::vector<Data> toSort)
     {
         auto begin = std::begin(toSort);
@@ -218,6 +307,27 @@ namespace FoolSort
             dk /= 3;
         }
         return std::move(toSort);
+    }
+
+    template<class Data>
+    void inplace_shellSort(std::vector<Data>& toSort)
+    {
+        auto begin = std::begin(toSort);
+        auto end = std::end(toSort);
+        int dk = 1;
+        while (dk < (end - begin) / 3)
+            dk = 3 * dk + 1;
+        while (dk > 0)
+        {
+            for (auto i = begin + dk; i != end; ++i)
+            {
+                for (auto j = i; (j - begin) >= dk && *j < *(j - dk); j -= dk)
+                {
+                    std::iter_swap(j, j - dk);
+                }
+            }
+            dk /= 3;
+        }
     }
 
     template<class RandomIte>
@@ -269,6 +379,16 @@ namespace FoolSort
         tempArray.resize(toSort.size());
         mergeSortSub(std::begin(toSort), std::end(toSort), std::begin(tempArray));
         return std::move(toSort);
+    }
+
+    template<class Data>
+    void inplace_mergeSort(std::vector<Data>& toSort)
+    {
+        auto begin = std::begin(toSort);
+        auto end = std::end(toSort);
+        std::vector<Data> tempArray;
+        tempArray.resize(toSort.size());
+        mergeSortSub(std::begin(toSort), std::end(toSort), std::begin(tempArray));
     }
 
     template<class Data>

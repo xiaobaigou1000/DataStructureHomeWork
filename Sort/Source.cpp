@@ -1,5 +1,6 @@
 #include<iostream>
 #include"foolsort.h"
+#include"AlgorithmLab.h"
 
 void menu()
 {
@@ -17,51 +18,13 @@ void menu()
 
 int main()
 {
-    using namespace FoolSort;
-    menu();
-    int choice = -1;
-    while (std::cin >> choice)
-    {
-        switch (choice)
-        {
-        case 1:
-            std::cout << "\n\ninsertion sort\n\n";
-            sortFunctionTestAndEfficiencyComparison(std::cout, 50000, insertSort);
-            break;
-        case 2:
-            std::cout << "\n\nbinary insertion sort\n\n";
-            sortFunctionTestAndEfficiencyComparison(std::cout, 50000, binaryInsertionSort);
-            break;
-        case 3:
-            std::cout << "\n\nshell sort\n\n";
-            sortFunctionTestAndEfficiencyComparison(std::cout, 10000000, shellSort);
-            break;
-        case 4:
-            std::cout << "\n\nbubble sort\n\n";
-            sortFunctionTestAndEfficiencyComparison(std::cout, 50000, bubbleSort);
-            break;
-        case 5:
-            std::cout << "\n\nquick sort\n\n";
-            sortFunctionTestAndEfficiencyComparison(std::cout, 100000000, quickSort);
-            break;
-        case 6:
-            std::cout << "\n\nsimple select sort\n\n";
-            sortFunctionTestAndEfficiencyComparison(std::cout, 50000, simpleSelectSort);
-            break;
-        case 7:
-            std::cout << "\n\nheap sort\n\n";
-            sortFunctionTestAndEfficiencyComparison(std::cout, 10000000, heapSort);
-            break;
-        case 8:
-            std::cout << "\n\nmerge sort\n\n";
-            sortFunctionTestAndEfficiencyComparison(std::cout, 50000000, mergeSort);
-            break;
-        case 9:
-            std::cout << "\n\nAVL sort\n\n";
-            sortFunctionTestAndEfficiencyComparison(std::cout, 10000000, AVLSort);
-        default:
-            break;
-        }
-    }
+    calculateSortTimeAlgorithm(500, 500, 100, 4, "bubbleSort", FoolSort::inplace_bubbleSort<size_t>);
+    calculateSortTimeAlgorithm(500, 500, 100, 4, "insertSort", FoolSort::inplace_insert_sort<size_t>);
+    calculateSortTimeAlgorithm(500, 500, 100, 4, "binaryInsersionSort", FoolSort::inplace_binaryInsertionSort<size_t>);
+    calculateSortTimeAlgorithm(100000, 100000, 100, 4, "shellSort", FoolSort::inplace_shellSort<size_t>);
+    calculateSortTimeAlgorithm(100000, 100000, 100, 4, "heap_sort", FoolSort::inplace_heapSort<size_t>);
+    calculateSortTimeAlgorithm(100000, 100000, 100, 4, "quick_sort", FoolSort::inplace_quickSort<size_t>);
+    calculateSortTimeAlgorithm(100000, 100000, 100, 4, "merge_sort", FoolSort::inplace_mergeSort<size_t>);
+
     return 0;
 }

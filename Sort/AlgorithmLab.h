@@ -4,12 +4,12 @@
 #include<fstream>
 
 template<typename SortFunc>
-void calculateSortTimeAlgorithm(size_t datasetSize, size_t step, size_t iterTimes, size_t repeatTimes, const std::string& fileName, SortFunc func) {
+void calculateSortTimeAlgorithm(size_t InitialDatasetSize, size_t step, size_t iterTimes, size_t repeatTimes, const std::string& fileName, SortFunc func) {
 
     std::vector<std::chrono::high_resolution_clock::duration> avgTimes;
     for (size_t i = 0; i < iterTimes; i++)
     {
-        std::vector<size_t> rawArray = FoolSort::spawnOriginData<size_t>(datasetSize);
+        std::vector<size_t> rawArray = FoolSort::spawnOriginData<size_t>(InitialDatasetSize);
         std::chrono::high_resolution_clock::duration multipleDuration{};
         for (size_t j = 0; j < repeatTimes + 2; j++)
         {
@@ -24,14 +24,14 @@ void calculateSortTimeAlgorithm(size_t datasetSize, size_t step, size_t iterTime
         }
         std::chrono::high_resolution_clock::duration avgTime = multipleDuration / repeatTimes;
         avgTimes.push_back(avgTime);
-        std::cout << "Data size of: " << datasetSize<<" used: " << avgTime.count() << "ns\n";
-        datasetSize += step;
+        std::cout << "Data size of: " << InitialDatasetSize << " used: " << avgTime.count() << "ns\n";
+        InitialDatasetSize += step;
     }
 
     std::ofstream ofile(fileName + ".csv");
     ofile << "size,time\n";
     for (int i = 0; i < avgTimes.size(); i++)
     {
-        ofile << i * step << ',' << avgTimes[i].count() << "\n";
+        ofile << i * step + InitialDatasetSize << ',' << avgTimes[i].count() << "\n";
     }
 }

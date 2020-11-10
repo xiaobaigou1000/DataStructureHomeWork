@@ -24,7 +24,7 @@ void calculateSortTimeAlgorithm(const size_t InitialDatasetSize, size_t step, si
         }
         std::chrono::high_resolution_clock::duration avgTime = multipleDuration / repeatTimes;
         avgTimes.push_back(avgTime);
-        std::cout << "Data size of: " << currentSize << " used: " << avgTime.count() << "ns\n";
+        std::cout << "Data size of: " << currentSize << " used: " << std::chrono::duration_cast<std::chrono::duration<double>>(avgTime).count() << "s\n";
         currentSize += step;
     }
 

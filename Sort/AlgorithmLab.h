@@ -4,12 +4,12 @@
 #include<fstream>
 
 template<typename SortFunc>
-void calculateSortTimeAlgorithm(size_t InitialDatasetSize, size_t step, size_t iterTimes, size_t repeatTimes, const std::string& fileName, SortFunc func) {
-
+void calculateSortTimeAlgorithm(const size_t InitialDatasetSize, size_t step, size_t iterTimes, size_t repeatTimes, const std::string& fileName, SortFunc func) {
+    size_t currentSize = InitialDatasetSize;
     std::vector<std::chrono::high_resolution_clock::duration> avgTimes;
     for (size_t i = 0; i < iterTimes; i++)
     {
-        std::vector<size_t> rawArray = FoolSort::spawnOriginData<size_t>(InitialDatasetSize);
+        std::vector<size_t> rawArray = FoolSort::spawnOriginData<size_t>(currentSize);
         std::chrono::high_resolution_clock::duration multipleDuration{};
         for (size_t j = 0; j < repeatTimes + 2; j++)
         {
@@ -24,8 +24,8 @@ void calculateSortTimeAlgorithm(size_t InitialDatasetSize, size_t step, size_t i
         }
         std::chrono::high_resolution_clock::duration avgTime = multipleDuration / repeatTimes;
         avgTimes.push_back(avgTime);
-        std::cout << "Data size of: " << InitialDatasetSize << " used: " << avgTime.count() << "ns\n";
-        InitialDatasetSize += step;
+        std::cout << "Data size of: " << currentSize << " used: " << avgTime.count() << "ns\n";
+        currentSize += step;
     }
 
     std::ofstream ofile(fileName + ".csv");
